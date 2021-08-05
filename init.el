@@ -3,36 +3,38 @@
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 (setq-default frame-title-format '("%f"))
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+;; Load Path(s)
+(add-to-list 'load-path "./config")
 
 ;; Set up package.el to work with MELPA
 (require 'package)
+(setq package-enable-at-startup nil)
 (add-to-list 'package-archives
 	     '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
 (package-refresh-contents)
 
-;; packages 
-(unless (package-installed-p 'evil)
- (package-install 'evil))
-(unless (package-installed-p 'moom)
- (package-install 'moom))
-(unless (package-installed-p 'key-chord)
- (package-install 'key-chord)) 
+;; Packages
+(setq package-list
+	`(
+		evil
+		evil-commentary
+		evil-leader
+		evil-matchit
+		evil-surround
+		key-chord
+	)
+)
 
-;; evil
-(require 'evil)
-(evil-mode 1)
-(setq evil-want-C-d-scroll t)
-(setq evil-want-C-u-scroll t)
+(dolist (package package-list)
+  (unless (package-installed-p package)
+    (package-install package)))
 
-;; moom - frame manager
-(with-eval-after-load "moom" (setq moom-fill-width 1)(moom-mode 1))
 
-;; keychord  (seems to be the best way to remap 'jk' to evil-mode esc (!?)
-(require 'key-chord)
-(key-chord-mode 1)
-(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+;; Custom configs
+(require 'kq-evil)
+(require 'kq-keychord)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
